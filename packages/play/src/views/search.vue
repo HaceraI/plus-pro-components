@@ -1,21 +1,44 @@
 <template>
   <el-card>
-    <PlusSearch
-      v-model="state"
-      :columns="columns"
-      :show-number="4"
-      @change="handleChange"
-      @search="handleSearch"
-      @reset="handleReset"
-      @collapse="onCollapse"
-    />
+    <el-space direction="vertical" alignment="normal" style="display: flex">
+      <el-space>
+        <PlusRadio v-model="labelPositionState.value" :options="labelPositionState.options" />
+        <el-input-number v-model="showNumber" :min="1" />
+      </el-space>
+
+      <PlusSearch
+        v-model="state"
+        :columns="columns"
+        :show-number="showNumber"
+        :label-position="labelPositionState.value"
+        @change="handleChange"
+        @search="handleSearch"
+        @reset="handleReset"
+        @collapse="onCollapse"
+      />
+    </el-space>
   </el-card>
 </template>
 
 <script lang="ts" setup>
-import { ref, computed } from 'vue'
+import { ref, computed, reactive } from 'vue'
 import type { PlusColumn } from '@plus-pro-components/types'
+import type { OptionsRow, RecordType } from 'plus-pro-components'
+type State = {
+  options: OptionsRow<RecordType>[]
+  value: string
+}
 
+const labelPositionState = reactive<State>({
+  options: [
+    { label: 'Left', value: 'left' },
+    { label: 'Right', value: 'right' },
+    { label: 'Top', value: 'top' }
+  ],
+  value: 'left'
+})
+
+const showNumber = ref<number>(4)
 const state = ref({
   status: '0',
   time: new Date().toString()
